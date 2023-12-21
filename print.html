@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="webdev/DemoExam/config/index.html"><strong aria-hidden="true">1.</strong> Конфиг</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="webdev/DemoExam/config/Config.html"><strong aria-hidden="true">1.1.</strong> web.php</a></li></ol></li><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/index.html"><strong aria-hidden="true">2.</strong> Backend</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/User.html"><strong aria-hidden="true">2.1.</strong> User</a></li><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/Patterns.html"><strong aria-hidden="true">2.2.</strong> Patterns</a></li><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/Problem.html"><strong aria-hidden="true">2.3.</strong> Problem</a></li><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/YiiView.html"><strong aria-hidden="true">2.4.</strong> YiiView</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="webdev/DemoExam/config/index.html"><strong aria-hidden="true">1.</strong> Конфиг</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="webdev/DemoExam/config/Config.html"><strong aria-hidden="true">1.1.</strong> web.php</a></li></ol></li><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/index.html"><strong aria-hidden="true">2.</strong> Backend</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/User.html"><strong aria-hidden="true">2.1.</strong> User</a></li><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/Patterns.html"><strong aria-hidden="true">2.2.</strong> Patterns</a></li><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/Problem.html"><strong aria-hidden="true">2.3.</strong> Problem</a></li><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/YiiView.html"><strong aria-hidden="true">2.4.</strong> YiiView</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="webdev/DemoExam/PHP/dropDownList.html"><strong aria-hidden="true">2.4.1.</strong> dropDownList</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -488,6 +488,53 @@ public function actionCreate() {
     ...
     ],
 ]); ?&gt;
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><hr />
+<p>tags:</p>
+<ul>
+<li>php</li>
+<li>webdev</li>
+<li>dexam</li>
+<li>yii2</li>
+</ul>
+<hr />
+<h5 id="Создано-8122023-Обновлений-нет"><a class="header" href="#Создано-8122023-Обновлений-нет">Создано 8.12.2023 Обновлений нет</a></h5>
+<h3 id="Создание-заявки"><a class="header" href="#Создание-заявки">Создание заявки</a></h3>
+<ul>
+<li>В модели заявки необходимо создать функцию с следующим кодом</li>
+</ul>
+<pre><code class="language-php">public static function getCategories() {
+	$query = new Query();
+	return $query-&gt;select('title')
+	-&gt;form('category')
+	-&gt;indexBy('id')
+	-&gt;column();
+}
+</code></pre>
+<ul>
+<li>В форме для поля категорий прописать тип поля dropDownList(Category::getCategories) </li>
+<li>Теперь в категориях будет список со всеми категориями</li>
+<li>Для того, чтобы создать базовое поле с текстом &quot;Выберите категорию&quot;, необходимо дописать в dropDownList(Category::getCategories,['prompt' =&gt; 'Выберите категорию']) </li>
+</ul>
+<h3 id="Фильтр-для-gridview"><a class="header" href="#Фильтр-для-gridview">Фильтр для gridView</a></h3>
+<ul>
+<li>Для активации фильтра или наоборот его отсутствия необходимо написать следующий код</li>
+</ul>
+<pre><code class="language-php">...
+'id',
+'title',
+// С фильтром
+[
+	'attribute' =&gt; 'category_id'
+	'filter' =&gt; Category::getCategories();
+],
+// Без фильтра
+[ 
+	//Вместо id статуса будет статус. Например: &quot;Новая&quot;, вместо &quot;1&quot;
+	'attribute' =&gt; function($model) { return Status::getStatus($model-&gt;id); }
+	'filter' =&gt; ''
+]
+
 </code></pre>
 
                     </main>

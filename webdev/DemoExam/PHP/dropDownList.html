@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Problem - Obsidian Vault</title>
+        <title>dropDownList - Obsidian Vault</title>
 
 
         <!-- Custom HTML head -->
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/config/index.html"><strong aria-hidden="true">1.</strong> Конфиг</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/config/Config.html"><strong aria-hidden="true">1.1.</strong> web.php</a></li></ol></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/index.html"><strong aria-hidden="true">2.</strong> Backend</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/User.html"><strong aria-hidden="true">2.1.</strong> User</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/Patterns.html"><strong aria-hidden="true">2.2.</strong> Patterns</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/Problem.html" class="active"><strong aria-hidden="true">2.3.</strong> Problem</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/YiiView.html"><strong aria-hidden="true">2.4.</strong> YiiView</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/dropDownList.html"><strong aria-hidden="true">2.4.1.</strong> dropDownList</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/config/index.html"><strong aria-hidden="true">1.</strong> Конфиг</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/config/Config.html"><strong aria-hidden="true">1.1.</strong> web.php</a></li></ol></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/index.html"><strong aria-hidden="true">2.</strong> Backend</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/User.html"><strong aria-hidden="true">2.1.</strong> User</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/Patterns.html"><strong aria-hidden="true">2.2.</strong> Patterns</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/Problem.html"><strong aria-hidden="true">2.3.</strong> Problem</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/YiiView.html"><strong aria-hidden="true">2.4.</strong> YiiView</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/dropDownList.html" class="active"><strong aria-hidden="true">2.4.1.</strong> dropDownList</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -176,79 +176,59 @@
                         <hr />
 <p>tags:</p>
 <ul>
-<li>dexam</li>
-<li>webdev</li>
-<li>yii2</li>
 <li>php</li>
+<li>webdev</li>
+<li>dexam</li>
+<li>yii2</li>
 </ul>
 <hr />
+<h5 id="Создано-8122023-Обновлений-нет"><a class="header" href="#Создано-8122023-Обновлений-нет">Создано 8.12.2023 Обновлений нет</a></h5>
+<h3 id="Создание-заявки"><a class="header" href="#Создание-заявки">Создание заявки</a></h3>
 <ul>
-<li>Раздел config посвящен всем настройкам Yii2 для демоэкзамена.</li>
+<li>В модели заявки необходимо создать функцию с следующим кодом</li>
 </ul>
-<h6 id="Создано-05122023-Обновление-7122023"><a class="header" href="#Создано-05122023-Обновление-7122023">Создано 05.12.2023 Обновление 7.12.2023</a></h6>
-<h4 id="Создание"><a class="header" href="#Создание">Создание</a></h4>
-<ul>
-<li>Через GII создается CRUD-модель и контроллер с ней</li>
-<li>В форме убираются ненужные поля и добавляем поле с файлом</li>
-<li>В Zeal пишем Yii:fileUpload и берем все по порядку</li>
-<li>Также необходимо взять beforeSave он также есть в Zeal</li>
-<li>Делается функция загрузки изображения в модели, изменяется имя файла на file_name+'.'+file_extension</li>
-</ul>
-<pre><code class="language-php">public $imageFile; 
-
-public function rules() { 
-	return [ 
-	[['imageFile'], 'file', 'skipOnEmpty' =&gt; false, 'extensions' =&gt; 'png, jpg'], 
-	[['usr_img'], 'string'],
-	]; 
-}
-
-public function beforeSave($insert) { 
-	if (!parent::beforeSave($insert)) { 
-		return false; 
-	} 
-		$this-&gt;usr_src = $this-&gt;imageFile-&gt;name;
-		$this-&gt;user_id = User::getId();
-		// Если необходимо сюда же прописываете статус, но его можно ставить в бд по умолчанию, также как и временную метку
-		return true; 
-	}
-
-public function upload() {
-	if($this-&gt;validate()) {
-		$fileName = Yii::$app-&gt;security-&gt;generateRandomString(15).$this-&gt;imageFile-&gt;extension;
-		$this-&gt;imageFile-&gt;name = $fileName;
-		$this-&gt;imageFile-&gt;saveAs('@app/web/uploads.' . $fileName); 
-	}
+<pre><code class="language-php">public static function getCategories() {
+	$query = new Query();
+	return $query-&gt;select('title')
+	-&gt;form('category')
+	-&gt;indexBy('id')
+	-&gt;column();
 }
 </code></pre>
 <ul>
-<li>В контроллере необходимо добавить следующий код</li>
+<li>В форме для поля категорий прописать тип поля dropDownList(Category::getCategories) </li>
+<li>Теперь в категориях будет список со всеми категориями</li>
+<li>Для того, чтобы создать базовое поле с текстом &quot;Выберите категорию&quot;, необходимо дописать в dropDownList(Category::getCategories,['prompt' =&gt; 'Выберите категорию']) </li>
 </ul>
-<pre><code class="language-php">use yii\web\UploadedFile;
-...
-public function actionCreate() {
-	if (Yii::$app-&gt;request-&gt;isPost) {
-		... //Здесь условие которое, автоматически создает CRUD-модель, из него убрать $model-&gt;save() 
-		$model-&gt;imageFile = UploadedFile::getInstance($model, 'imageFile'); 
-		if ($model-&gt;upload()) {
-			 $model-&gt;save(false);
-			// Делаем return во view.php, он создан автоматически, просто необходимо правильно раставить скобки и условия 
-			} 
-		}
-}
+<h3 id="Фильтр-для-gridview"><a class="header" href="#Фильтр-для-gridview">Фильтр для gridView</a></h3>
+<ul>
+<li>Для активации фильтра или наоборот его отсутствия необходимо написать следующий код</li>
+</ul>
+<pre><code class="language-php">...
+'id',
+'title',
+// С фильтром
+[
+	'attribute' =&gt; 'category_id'
+	'filter' =&gt; Category::getCategories();
+],
+// Без фильтра
+[ 
+	//Вместо id статуса будет статус. Например: &quot;Новая&quot;, вместо &quot;1&quot;
+	'attribute' =&gt; function($model) { return Status::getStatus($model-&gt;id); }
+	'filter' =&gt; ''
+]
+
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../../webdev/DemoExam/PHP/Patterns.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../webdev/DemoExam/PHP/YiiView.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../../webdev/DemoExam/PHP/YiiView.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -256,13 +236,10 @@ public function actionCreate() {
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../../webdev/DemoExam/PHP/Patterns.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../webdev/DemoExam/PHP/YiiView.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../../webdev/DemoExam/PHP/YiiView.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>
