@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Конфиг - Obsidian Vault</title>
+        <title>Problem - Obsidian Vault</title>
 
 
         <!-- Custom HTML head -->
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/config/index.html" class="active"><strong aria-hidden="true">1.</strong> Конфиг</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/config/Config.html"><strong aria-hidden="true">1.1.</strong> web.php</a></li></ol></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/index.html"><strong aria-hidden="true">2.</strong> Backend</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/User.html"><strong aria-hidden="true">2.1.</strong> User</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/Patterns.html"><strong aria-hidden="true">2.2.</strong> Patterns</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/Problem.html"><strong aria-hidden="true">2.3.</strong> Problem</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/YiiView.html"><strong aria-hidden="true">2.4.</strong> YiiView</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/config/index.html"><strong aria-hidden="true">1.</strong> Конфиг</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/config/Config.html"><strong aria-hidden="true">1.1.</strong> web.php</a></li></ol></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/index.html"><strong aria-hidden="true">2.</strong> Backend</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/User.html"><strong aria-hidden="true">2.1.</strong> User</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/Patterns.html"><strong aria-hidden="true">2.2.</strong> Patterns</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/Problem.html" class="active"><strong aria-hidden="true">2.3.</strong> Problem</a></li><li class="chapter-item expanded "><a href="../../../webdev/DemoExam/PHP/YiiView.html"><strong aria-hidden="true">2.4.</strong> YiiView</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -173,18 +173,80 @@
 
                 <div id="content" class="content">
                     <main>
-                        <ul>
-<li>Раздел config посвящен всем настройкам Yii2 для демоэкзамена.</li>
-<li>Тут можно найти ответ на любой вопрос по данной теме. </li>
-<li>Если нет ответа на ваш вопрос пишите в <a href="https://t.me/retr0mus">Телеграм</a></li>
+                        <hr />
+<p>tags:</p>
+<ul>
+<li>dexam</li>
+<li>webdev</li>
+<li>yii2</li>
+<li>php</li>
 </ul>
+<hr />
+<ul>
+<li>Раздел config посвящен всем настройкам Yii2 для демоэкзамена.</li>
+</ul>
+<h6 id="Создано-05122023-Обновление-7122023"><a class="header" href="#Создано-05122023-Обновление-7122023">Создано 05.12.2023 Обновление 7.12.2023</a></h6>
+<h4 id="Создание"><a class="header" href="#Создание">Создание</a></h4>
+<ul>
+<li>Через GII создается CRUD-модель и контроллер с ней</li>
+<li>В форме убираются ненужные поля и добавляем поле с файлом</li>
+<li>В Zeal пишем Yii:fileUpload и берем все по порядку</li>
+<li>Также необходимо взять beforeSave он также есть в Zeal</li>
+<li>Делается функция загрузки изображения в модели, изменяется имя файла на file_name+'.'+file_extension</li>
+</ul>
+<pre><code class="language-php">public $imageFile; 
+
+public function rules() { 
+	return [ 
+	[['imageFile'], 'file', 'skipOnEmpty' =&gt; false, 'extensions' =&gt; 'png, jpg'], 
+	[['usr_img'], 'string'],
+	]; 
+}
+
+public function beforeSave($insert) { 
+	if (!parent::beforeSave($insert)) { 
+		return false; 
+	} 
+		$this-&gt;usr_src = $this-&gt;imageFile-&gt;name;
+		$this-&gt;user_id = User::getId();
+		// Если необходимо сюда же прописываете статус, но его можно ставить в бд по умолчанию, также как и временную метку
+		return true; 
+	}
+
+public function upload() {
+	if($this-&gt;validate()) {
+		$fileName = Yii::$app-&gt;security-&gt;generateRandomString(15).$this-&gt;imageFile-&gt;extension;
+		$this-&gt;imageFile-&gt;name = $fileName;
+		$this-&gt;imageFile-&gt;saveAs('@app/web/uploads.' . $fileName); 
+	}
+}
+</code></pre>
+<ul>
+<li>В контроллере необходимо добавить следующий код</li>
+</ul>
+<pre><code class="language-php">use yii\web\UploadedFile;
+...
+public function actionCreate() {
+	if (Yii::$app-&gt;request-&gt;isPost) {
+		... //Здесь условие которое, автоматически создает CRUD-модель, из него убрать $model-&gt;save() 
+		$model-&gt;imageFile = UploadedFile::getInstance($model, 'imageFile'); 
+		if ($model-&gt;upload()) {
+			 $model-&gt;save(false);
+			// Делаем return во view.php, он создан автоматически, просто необходимо правильно раставить скобки и условия 
+			} 
+		}
+}
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../../webdev/DemoExam/PHP/Patterns.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="../../../webdev/DemoExam/config/Config.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../webdev/DemoExam/PHP/YiiView.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -194,8 +256,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../../webdev/DemoExam/PHP/Patterns.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="../../../webdev/DemoExam/config/Config.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../webdev/DemoExam/PHP/YiiView.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
